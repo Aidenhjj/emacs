@@ -68,7 +68,8 @@
 (use-package swiper
   :bind
   (("C-s"  . swiper)
-   ("C-r" . swiper))
+   ("C-r" . swiper)
+   ("C-%" . swiper-query-replace))
   )
 
 ;; projectile
@@ -84,26 +85,26 @@
   )
 
 ;; flyspell
-(use-package flyspell
-  :ensure t
-  :diminish ""
-  :init
-  (progn
-    ;; Enable spell check in program comments
-    (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-    ;; Enable spell check in plain text / org-mode
-    (add-hook 'text-mode-hook 'flyspell-mode)
-    (add-hook 'org-mode-hook 'flyspell-mode)
-    (setq flyspell-issue-welcome-flag nil)
-    (setq flyspell-issue-message-flag nil)
+;; (use-package flyspell
+;;   :ensure t
+;;   :diminish ""
+;;   :init
+;;   (progn
+;;     ;; Enable spell check in program comments
+;;     (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+;;     ;; Enable spell check in plain text / org-mode
+;;     (add-hook 'text-mode-hook 'flyspell-mode)
+;;     (add-hook 'org-mode-hook 'flyspell-mode)
+;;     (setq flyspell-issue-welcome-flag nil)
+;;     (setq flyspell-issue-message-flag nil)
 
-    ;; ignore repeated words
-    (setq flyspell-mark-duplications-flag nil)
+;;     ;; ignore repeated words
+;;     (setq flyspell-mark-duplications-flag nil)
 
-    ;; (setq-default ispell-program-name "/usr/bin/aspell")
-    (setq-default ispell-list-command "list")
-    )
-  )
+;;     ;; (setq-default ispell-program-name "/usr/bin/aspell")
+;;     (setq-default ispell-list-command "list")
+;;     )
+;;   )
 
 ;; magit
 (use-package magit
@@ -126,11 +127,11 @@
   :config
   (global-company-mode t))
 
-(use-package flycheck
-  :ensure
-  :init
-  (global-flycheck-mode)
-  )
+;; (use-package flycheck
+;;   :ensure
+;;   :init
+;;   (global-flycheck-mode)
+;;   )
 
 ;; Dired - powerful file manager
 (use-package dired-x ; Enable some nice dired features
@@ -145,20 +146,27 @@
   )
 
 ;;;; PYTHON STUFF
-(use-package jedi
+;; (use-package jedi
+;;   :ensure
+;;   :init
+;;   (add-hook 'python-mode-hook 'jedi:setup)
+;;   (setq jedi:complete-on-dot t)
+;;   (setq jedi:setup-keys t)
+;;   )
+
+;; ;; company for jedi
+;; (use-package company-jedi
+;;   :ensure t
+;;   :init
+;;   (add-hook 'python-mode-hook
+;; 	    (lambda () (add-to-list 'company-backends 'company-jedi)))
+;;   )
+
+(use-package elpy
   :ensure
   :init
-  (add-hook 'python-mode-hook 'jedi:setup)
-  (setq jedi:complete-on-dot t)
-  )
-
-;; company for jedi
-(use-package company-jedi
-  :ensure t
-  :init
-  (add-hook 'python-mode-hook
-	    (lambda () (add-to-list 'company-backends 'company-jedi)))
-  )
+  (elpy-enable)
+)
 
 ;;;; HASKELL STUFF
 (use-package haskell-mode
@@ -176,8 +184,30 @@
 (use-package yaml-mode
   :ensure t)
 
-;;;; MARKDOWN
-(use-package markdown-mode
-  :ensure
+;;;; JSON
+(use-package json-mode
+  :ensure t
+  :mode (("\\.json\\'" . json-mode)
+         )
   )
 
+;;;; MARKDOWN
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init
+  (setq markdown-command "multimarkdown")
+  :config
+  (setq visual-line-mode t))
+
+;; ;;;; OCTAVE STUFF
+(use-package octave
+  :ensure
+  :mode ("\\.m$" . octave-mode))
+;; (use-package matlab
+;;   :ensure
+;;   :init
+;;   (setq matlab-shell-command-switches '("-nodesktop")))
