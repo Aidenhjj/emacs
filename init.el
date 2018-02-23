@@ -60,6 +60,7 @@
 
 ;; Productive default mode
 (setq initial-major-mode 'org-mode)
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
 ;; now covered by smartparens
 ;; ;; Show matching parens
@@ -128,6 +129,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes (quote (deeper-blue)))
+ '(org-agenda-files (quote ("~/organizer.org")))
  '(package-selected-packages
    (quote
     (elpy yaml-mode use-package smex smartparens projectile markdown-mode magit jedi haskell-mode flycheck counsel company-jedi ace-jump-mode))))

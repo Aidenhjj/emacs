@@ -60,9 +60,24 @@
   :bind (("C-c l" . org-store-link)
          ("C-c a" . org-agenda))
   :config
-  (progn
-    (setq org-log-done t))
+  (setq org-todo-keywords '("TODO" "STARTED" "WAITING" "DONE")
+        org-agenda-include-diary t
+        org-log-done t
+        org-agenda-include-all-todo t)
+  (add-hook 'remember-mode-hook 'org-remember-apply-template)
   )
+
+;; remember
+(use-package remember
+  :ensure
+  :bind (("C-c r r" . remember))
+  :config
+  (setq org-remember-templates
+      '(("Tasks" ?t "* TODO %?\n  %i\n  %a" "~/organizer.org")
+        ("Appointments" ?a "* Appointment: %?\n%^T\n%i\n  %a" "~/organizer.org")))
+  (setq remember-annotation-functions '(org-remember-annotation))
+  (setq remember-handler-functions '(org-remember-handler))
+      )
 
 ;; counsel
 (use-package counsel
