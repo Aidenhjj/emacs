@@ -27,11 +27,32 @@
 ;; keybindings
 (load (emacs-d "key-bindings"))
 
+;; sort default-folder
+(with-system windows-nt
+  (setq default-directory "C:/Work" )
+  (add-to-list 'exec-path "C:/Program Files (x86)/Aspell/bin/")
+  (setq ispell-program-name "aspell")
+  (require 'ispell)
+  )
+
+;; auto split windows
+(add-hook 'emacs-startup-hook '2-windows-vertical-to-horizontal)
+
+;; add stuff for navigating frames
+(windmove-default-keybindings)
+
 ;; sort out basic startup behaviour
 (setq inhibit-startup-screen t)
 (menu-bar-mode 0)
 (tool-bar-mode 0)
 
+;; show line numbers
+(global-linum-mode t)
+
+;; sort slow next-line for some modes
+(setq auto-window-vscroll nil)
+
+;; set font
 (set-default-font "Ubuntu Mono-12")
 
 ;; lots of following taken from
@@ -68,11 +89,15 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; UTF-8 please
-(setq locale-coding-system 'utf-8) ; pretty
-(set-terminal-coding-system 'utf-8) ; pretty
-(set-keyboard-coding-system 'utf-8) ; pretty
-(set-selection-coding-system 'utf-8) ; please
-(prefer-coding-system 'utf-8) ; with sugar on top
+;; (setq locale-coding-system 'utf-8) ; pretty
+;; (set-terminal-coding-system 'utf-8) ; pretty
+;; (set-keyboard-coding-system 'utf-8) ; pretty
+;; (set-selection-coding-system 'utf-8) ; please
+
+(setq-default buffer-file-coding-system 'utf-8-unix)
+(setq-default default-buffer-file-coding-system 'utf-8-unix)
+(set-default-coding-systems 'utf-8-unix)
+(prefer-coding-system 'utf-8-unix)
 
 ;; Remove text in active region if inserting text
 (delete-selection-mode 1)
@@ -102,7 +127,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (deeper-blue))))
+ '(custom-enabled-themes (quote (deeper-blue)))
+ '(package-selected-packages
+   (quote
+    (elpy yaml-mode use-package smex smartparens projectile markdown-mode magit jedi haskell-mode flycheck counsel company-jedi ace-jump-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -111,7 +139,11 @@
  )
 
 ;; puts auto config stuff here (i think)
-(setq backup-directory-alist '(("." . "~/.emacs_saves")))
+;;(setq backup-directory-alist '((".*" . "~/.emacs_saves/")))
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
 ;;;; LANGUAGE SPECIFICS
 
@@ -125,6 +157,13 @@
 (setq c-default-style "k&r"
       c-basic-offset 4)
 
+;; (add-hook ' python-mode-hook
+          ;; (lambda ()
+          ;;   (setq tab-width 4)
+          ;;   (infer-indentation-style))
+          ;; )
+
 ;; Use C-Mode for CUDA
 ;; (add-to-list 'auto-mode-alist '("\\.cu\\'" . c-mode))
 
+(put 'dired-find-alternate-file 'disabled nil)

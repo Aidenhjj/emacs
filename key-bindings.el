@@ -1,1 +1,1 @@
-(global-set-key (kbd "C-d") 'duplicate-line)
+(global-set-key (kbd "C-c C-d") 'duplicate-line)
