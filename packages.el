@@ -34,31 +34,46 @@
   :diminish ""
   :init (ivy-mode 1)
   :config
-  (progn
-    (setq ivy-use-virtual-buffers t)
-    (setq ivy-extra-directories nil)
-    (bind-key "C-f" 'ivy-alt-done ivy-minibuffer-map)
-    (bind-key "C-b" 'ivy-backward-delete-char ivy-minibuffer-map))
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-extra-directories nil)
+  (setq enable-recursive-minibuffers t)
+  (bind-key "C-f" 'ivy-alt-done ivy-minibuffer-map)
+  (bind-key "C-b" 'ivy-backward-delete-char ivy-minibuffer-map)
+  (bind-key "C-c g" 'counsel-git)
+  (bind-key "C-c j" 'counsel-git-grep)
+  (bind-key "C-c k" 'counsel-ag)
   :bind (
          ("C-c C-r" . ivy-resume)
          )
   )
+;; (ivy-mode 1)
+;; (setq ivy-use-virtual-buffers t)
+;; (setq enable-recursive-minibuffers t)
+;; (global-set-key "\C-s" 'swiper)
+;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
+;; (global-set-key (kbd "<f6>") 'ivy-resume)
+;; (global-set-key (kbd "M-x") 'counsel-M-x)
+;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
+;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+;; (global-set-key (kbd "C-c g") 'counsel-git)
+;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+;; (global-set-key (kbd "C-c k") 'counsel-ag)
+;; (global-set-key (kbd "C-x l") 'counsel-locate)
+;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+;; (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
 
-;; ;; recentf-mode
-;; (use-package recentf
-;;   :init
-;;   (recentf-mode 1)
-;;   :bind
-;;   (("C-x f" . recentf-open-files)
-;;    )
-;;   )
 
 ;; org-mode
 (use-package org
   :ensure t
   :mode ("\\.org\\'" . org-mode)
   :bind (("C-c l" . org-store-link)
-         ("C-c a" . org-agenda))
+         ("C-c a" . org-agenda)
+         ("C-c c" . org-capture))
   :config
   (setq org-todo-keywords '("TODO" "STARTED" "WAITING" "DONE")
         org-agenda-include-diary t
@@ -66,18 +81,6 @@
         org-agenda-include-all-todo t)
   (add-hook 'remember-mode-hook 'org-remember-apply-template)
   )
-
-;; remember
-(use-package remember
-  :ensure
-  :bind (("C-c r r" . remember))
-  :config
-  (setq org-remember-templates
-      '(("Tasks" ?t "* TODO %?\n  %i\n  %a" "~/organizer.org")
-        ("Appointments" ?a "* Appointment: %?\n%^T\n%i\n  %a" "~/organizer.org")))
-  (setq remember-annotation-functions '(org-remember-annotation))
-  (setq remember-handler-functions '(org-remember-handler))
-      )
 
 ;; counsel
 (use-package counsel
@@ -135,14 +138,14 @@
 ;; magit
 (use-package magit
   :ensure
-  :bind (("C-x g" . magit-status))
+;;  :bind (("C-x g" . magit-status))
   )
 
 ;; magit-gerrit
 ;; (use-package magit-gerrit
 ;;   :ensure
 ;;   :init
-;;   (setqdefault magit-gerrit-ssh-creds "myid@gerrithost.org")
+;;   (setqdefault magit-gerrit-ssh-creds "aiden.jeffrey@codethink.co.uk")
 ;;   (setq-default magit-gerrit-remote "gerrit")
 ;;   )
 
@@ -151,7 +154,30 @@
   :ensure
   :diminish ""
   :config
-  (global-company-mode t))
+  (global-company-mode t)
+  (define-key company-active-map (kbd "C-n") 'company-select-next-or-abort)
+  (define-key company-active-map (kbd "C-p") 'company-select-previous-or-abort)
+  (define-key company-active-map (kbd "ESC") 'company-abort)
+  ;; <return> is for windowed Emacs; RET is for terminal Emacs
+  ;; (dolist (key '("<return>" "RET"))
+  ;;   ;; Here we are using an advanced feature of define-key that lets
+  ;;   ;; us pass an "extended menu item" instead of an interactive
+  ;;   ;; function. Doing this allows RET to regain its usual
+  ;;   ;; functionality when the user has not explicitly interacted with
+  ;;   ;; Company.
+  ;;   (define-key company-active-map (kbd key)
+  ;;     `(menu-item nil company-complete
+  ;;                 :filter ,(lambda (cmd)
+  ;;                            (when (company-explicit-action-p)
+  ;;                              cmd)))))
+  ;; (define-key company-active-map (kbd "TAB") #'company-complete-selection)
+  ;; (define-key company-active-map (kbd "SPC") nil)
+  ;; Company appears to override our settings in `company-active-map'
+  ;; based on `company-auto-complete-chars'. Turning it off ensures we
+  ;; have full control.
+  (setq company-auto-complete-chars nil)
+  
+  )
 
 ;; (use-package flycheck
 ;;   :ensure
@@ -180,19 +206,35 @@
 ;;   (setq jedi:setup-keys t)
 ;;   )
 
-;; ;; company for jedi
-;; (use-package company-jedi
-;;   :ensure t
-;;   :init
-;;   (add-hook 'python-mode-hook
-;; 	    (lambda () (add-to-list 'company-backends 'company-jedi)))
-;;   )
-
-(use-package elpy
-  :ensure
+;; company for jedi
+(use-package company-jedi
+  :ensure t
   :init
-  (elpy-enable)
-)
+  (add-hook 'python-mode-hook
+	    (lambda () (add-to-list 'company-backends 'company-jedi)))
+  )
+
+(use-package jedi
+  :ensure
+  :defer t
+  :init
+  (setq jedi:complete-on-dot t)
+  (add-hook 'python-mode-hook 'jedi:setup)
+  :bind (("C-c d" . jedi:show-doc)))
+
+(use-package eldoc
+  :ensure
+  :defer t
+  :diminish eldoc-mode)
+
+;; (use-package elpy
+;;   :ensure
+;;   :init
+;;   (setq elpy-rpc-backend "jedi")
+;;   (setq elpy-modules '(elpy-module-company
+;;                        elpy-module-eldoc
+;;                        elpy-module-sane-defaults
+;;                        elpy-module-pyvenv)))
 
 ;;;; HASKELL STUFF
 (use-package haskell-mode
@@ -223,7 +265,8 @@
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
+         ("\\.markdown\\'" . markdown-mode)
+         ("\\.mdwn\\'" . markdown-mode))
   :init
   (setq markdown-command "multimarkdown")
   :config
