@@ -10,6 +10,14 @@
   :ensure
   )
 
+;; for deleting whitespace
+;; (use-package hungry-delete
+;;   :ensure
+;;   :bind
+;;   (bind-key "C-c <backspace>" . hungry-delete-backward)
+;;   (bind-key "C-c <deletechar>" . hungry-delete-forward)
+;;   )
+
 ;; smartparens
 (use-package smartparens
   :ensure t
@@ -155,8 +163,6 @@
   :diminish ""
   :config
   (global-company-mode t)
-  (define-key company-active-map (kbd "C-n") 'company-select-next-or-abort)
-  (define-key company-active-map (kbd "C-p") 'company-select-previous-or-abort)
   (define-key company-active-map (kbd "ESC") 'company-abort)
   ;; <return> is for windowed Emacs; RET is for terminal Emacs
   ;; (dolist (key '("<return>" "RET"))
@@ -179,11 +185,21 @@
   
   )
 
-;; (use-package flycheck
-;;   :ensure
-;;   :init
-;;   (global-flycheck-mode)
-;;   )
+(use-package flycheck
+  :ensure
+  ;; :bind ("<kp-7>" . flycheck-next-error)
+  :preface
+  ;; (declare-function flycheck-next-error flycheck nil)
+  ;; (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
+  ;; (fringe-mode (quote (4 . 0)))
+  (global-flycheck-mode 1)
+  :config
+  (setq flycheck-emacs-lisp-load-path 'inherit)
+  (setq flycheck-python-flake8-executable "flake8")
+  (setq flycheck-highlighting-mode 'lines)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled)))
+
+(use-package flymake :disabled t)
 
 ;; Dired - powerful file manager
 (use-package dired-x ; Enable some nice dired features
@@ -209,10 +225,17 @@
 ;; company for jedi
 (use-package company-jedi
   :ensure t
+  :after jedi
   :init
   (add-hook 'python-mode-hook
 	    (lambda () (add-to-list 'company-backends 'company-jedi)))
   )
+
+;; (use-package flymake-python-pyflakes
+;;   :ensure
+;;   :init
+;;   (add-hook 'python-mode-hook 'flymake-python-pyflakes-load)
+;;   (setq flymake-python-pyflakes-executable "flake8"))
 
 (use-package jedi
   :ensure
@@ -229,7 +252,8 @@
 
 ;; (use-package elpy
 ;;   :ensure
-;;   :init
+;;   :init (with-eval-after-load 'python (elpy-enable))
+;;   :config
 ;;   (setq elpy-rpc-backend "jedi")
 ;;   (setq elpy-modules '(elpy-module-company
 ;;                        elpy-module-eldoc

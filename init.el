@@ -4,10 +4,14 @@
 
 (setq package-archives
       '(("MELPA Stable" . "https://stable.melpa.org/packages/")
+        ("ELPA" . "http://elpa.gnu.org/packages/")
+        ("MARMALADE" . "http://marmalade-repo.org/packages/")
         ("MELPA"        . "https://melpa.org/packages/"))
       package-archive-priorities
       '(("MELPA Stable" . 10)
-        ("MELPA"        . 0)))
+        ("MELPA"        . 7)
+        ("ELPA" . 5)
+        ("MARMALADE" . 3)))
 
 (setq package-enable-at-startup nil)
 (package-initialize)
@@ -22,6 +26,7 @@
 (load (emacs-d "packages"))
 
 ;; custom functions
+
 (load (emacs-d "functions"))
 
 ;; keybindings
@@ -70,6 +75,7 @@
 ;; ;; Auto-close brackets and double quotes
 ;; (electric-pair-mode 1)
 
+(desktop-save-mode 1)
 ;; Full path in frame title
 (when window-system
   (setq frame-title-format '(buffer-file-name "%f" ("%b"))))
